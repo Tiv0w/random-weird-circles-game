@@ -2,35 +2,41 @@
   <div id="app">
     <svg :width="windowWidth" :height="windowHeight - 60">
       <template
-        v-for="(circle, index) in circles"
+        v-for="circle in circles"
       >
         <MyCircle
-          :key="index"
+          :key="circle.id"
           :obj="circle"
           @click="circleClicked"
         ></MyCircle>
       </template>
     </svg>
+
+    <Counter msg="Score" :count="score"></Counter>
+
+    <!-- <Counter msg="Time"></Counter> -->
   </div>
 </template>
 
 <script>
 import MyCircle from './components/MyCircle.vue'
+import Counter from './components/Counter.vue'
 
 export default {
   name: 'app',
 
   components: {
-    MyCircle
+    MyCircle,
+    Counter
   },
 
   data: () => ({
     maxHeight: null,
     score: 0,
-    circles: []
+    circles: {}
   }),
 
-  mounted () {
+  created () {
     this.maxHeight = this.windowHeight - 60 // we give enough room for the scoreboard
     this.initCircles()
   },
@@ -40,11 +46,12 @@ export default {
       return Math.floor(Math.random() * (up - low)) + low
     },
 
-    createCircle (radius) {
+    createCircle (index, radius) {
       const cx = this.rand(1, this.windowWidth - radius)
       const cy = this.rand(1, this.maxHeight - radius)
 
       return {
+        id: index,
         cx: cx,
         cy: cy,
         r: radius
@@ -54,21 +61,17 @@ export default {
     initCircles () {
       const radius = this.rand(100, 300)
       for (let i = 0; i < 5; i++) {
-        this.circles.push(this.createCircle(radius))
+        this.circles[i] = this.createCircle(i, radius)
       }
     },
 
     circleClicked (circle) {
-      console.log(circle)
       this.score++
       this.removeCircle(circle)
     },
 
     removeCircle (oldCircle) {
-      const index = this.circles.indexOf(oldCircle)
-      if (index > -1) {
-        this.circles.splice(index, 1)
-      }
+      delete this.circles[oldCircle.id]
     }
   }
 }
