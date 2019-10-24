@@ -1,4 +1,4 @@
-# proj-artisan-circles
+# random-weird-circles-game !!!!!!!!! unfinished :construction:
 
 ## Project setup
 ```
